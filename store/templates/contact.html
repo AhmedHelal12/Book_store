@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<main>
+    <div id="googleMap" style="width: 100%; height: 400px"></div>
+    <div class="container my-5">
+      <section>
+        <div class="col-md-12 mb-5">
+          <p class="h1 text-center text-secondary">اتصل بنا</p>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <form>
+                  <div class="mb-3">
+                    <label for="inputName" class="form-label">الاسم</label>
+                    <input type="text" class="form-control" id="inputName" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="inputEmail" class="form-label"
+                      >البريد الإلكتروني</label
+                    >
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="inputEmail"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="inputSubject" class="form-label"
+                      >الموضوع</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="inputSubject"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="inputMessage" class="form-label"
+                      >الرسالة</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="inputMessage"
+                      rows="6"
+                    ></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary">إرسال</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+{% endblock content %}

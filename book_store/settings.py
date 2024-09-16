@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'store',
+    'checkout'
 ]
 
 MIDDLEWARE = [
@@ -62,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'store.custorm_context_proccessor.website_store',
             ],
         },
     },
@@ -115,9 +118,26 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+MEDIA_URL='/media/'
+MEDIA_ROOT='media/'
+
+
+STATIC_URL = '/static/'  # Ensure a trailing slash for proper URL handling
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Static files directory at the project root
+]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"  # Directory for collected static files (using pathlib)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = '1049c9898545e5'
+EMAIL_HOST_PASSWORD = 'e8e952f325c879'
+EMAIL_PORT = '2525'
+
+SITE_URL = 'http://127.0.0.1:8000/'

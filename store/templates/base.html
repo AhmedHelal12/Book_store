@@ -1,0 +1,26 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar" class="h-100" dir="rtl">
+  <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>متجر كتب</title>
+      <script defer src="{% static 'js/135.477cbbb1.js' %}"></script>
+      <script defer src="{% static 'js/app.48151742.js' %}"></script>
+      <link href="{% static 'css/135.css' %}" rel="stylesheet">
+      <link href="{% static 'css/app.css' %}" rel="stylesheet">
+  </head>
+  </head>
+<body>
+{% include "partials/header.html" %}
+
+{% block content %}{% endblock content %}
+
+{% include "partials/footer.html" %}
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+</body>
+</html>
