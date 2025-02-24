@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-e00r!_nbkgowuszm-a=6w_@onpkd-m(wzan6_^6(zgt)qgyrd@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
+
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
+
 
 
 # Application definition
@@ -37,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'paypal.standard.ipn',
     'store',
     'checkout'
 ]
@@ -141,3 +145,11 @@ EMAIL_HOST_PASSWORD = 'e8e952f325c879'
 EMAIL_PORT = '2525'
 
 SITE_URL = 'http://127.0.0.1:8000/'
+
+STRIPE_PUBLISHABLE_KEY='pk_test_51Q106UDjCzAxwHyB4Bmmc02oOxef4EDex6KE15f22yquL4L4meYxVwOorzf8RQDAM0ivNPKLEWVYdD1P4LCmQZ0M00axZBQ2oN'
+STRIPE_SECRET_KEY='sk_test_51Q106UDjCzAxwHyBxxQxxY9etR4EeTAxaDTUdI72wN3FWgS797rcf4pQ1SrLMkhOBQ51XBvLDjKPPRSHOL9g4tnv00qtThAk9d'
+STRIPE_ENDPOINT_SECRET = 'whsec_0f3eb6d87e8ea5bdc321eb2b9330150510f0b97e5263d2199a8275406e648c8e'
+
+PAYPAL_TEST = True
+PAYPAL_EMAIL = 'sb-ixvs334049410@business.example.com'
+CURRENCY='USD'

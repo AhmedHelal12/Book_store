@@ -1,14 +1,67 @@
 from django.shortcuts import render,redirect
-from .forms import UserInfo
+from django.http import HttpResponse, JsonResponse
+from django.urls import reverse
+from .forms import MyPayPalPaymentsForm, UserInfo
 from store.models import Cart,Product,Order,OrderProduct
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-# Create your views here.
-def make_order(request):
+from .models import Transaction,PaymentMethod
+from book_store import settings
+from django.utils.translation import gettext as _
+import stripe
+import math
+from paypal.standard.forms import PayPalPaymentsForm
 
-    if request.method != "POST":
-        return redirect('store.checkout')
+def stripe_config(request):
+    return JsonResponse({
+        'public_key':settings.STRIPE_PUBLISHABLE_KEY
+    })
     
+
+def stripe_transaction(request):
+    transaction = make_transaction(request,PaymentMethod.Stripe)
+    if not transaction:
+        return JsonResponse({
+            'message':_("Please enter valid information")
+        })   
+
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    intent = stripe.PaymentIntent.create(
+        amount=transaction.amount * 100,
+        currency=settings.CURRENCY,
+        payment_method_types=['card'],
+        metadata={
+            'transaction':transaction.id
+        }
+    )
+
+    return JsonResponse({
+        'client_secret':intent['client_secret']
+    })
+
+
+def paypal_transaction(request):
+    transaction = make_transaction(request, PaymentMethod.Paypal)
+    if not transaction:
+        return JsonResponse({
+            'message': _('Please enter valid information.')
+        }, status=400)
+
+    form = MyPayPalPaymentsForm(initial={
+        'business': settings.PAYPAL_EMAIL,
+        'amount': transaction.amount,
+        'invoice': transaction.id,
+        'currency_code': settings.CURRENCY,
+        'return_url': f'http://{request.get_host()}{reverse("checkout_complete")}',
+        'cancel_url': f'http://{request.get_host()}{reverse("store.checkout")}',
+        'notify_url': f'http://{request.get_host()}{reverse("checkout.paypal-webhook")}',
+    })
+
+    return HttpResponse(form.render())
+
+
+def make_transaction(request,pm):
+
     form = UserInfo(request.POST)
     if form.is_valid():
         cart = Cart.objects.filter(session=request.session.session_key).last()
@@ -22,26 +75,15 @@ def make_order(request):
         if total <=0:
             return redirect('store.cart')
 
-        order = Order.objects.create(customer=form.cleaned_data,total=total)
+        return Transaction.objects.create(
+            customer=form.cleaned_data,
+            amount=math.ceil(total),
+            items=cart.cart_items,
+            session=request.session.session_key,
+            payment_method=pm
+            )
 
-        for product in products:
-            ##order.orderproduct_set.create(product_id=product.id,price=product.price)
-            OrderProduct.objects.create(order_id=order.id,product_id=product.id,price=product.price)
-        
-        send_order_email(order,products)
-        cart.delete()
+def checkout_complete(request):
+    Cart.objects.filter(session=request.session.session_key).delete()
 
-        return redirect('store.checkout_complete')
-    else:
-        return redirect('store.checkout')
-
-
-def send_order_email(order,products):
-    html_msg = render_to_string('email/order.html',{'order':order,'products':products})
-
-    send_mail(
-       subject="New Order",
-       from_email="ahmed@gmail.com",
-       recipient_list=[order.customer['first_name']],
-       message=html_msg,
-       html_message=html_msg)
+    return render(request,'checkout_complete.html')

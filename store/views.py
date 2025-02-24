@@ -21,18 +21,15 @@ def cart_update(request, cid):
         request.session.create()
 
     session_id = request.session.session_key
-    print(f"Session ID: {session_id}")
     
     cart = Cart.objects.filter(session_id=session_id).last()
-    print(f"Cart: {cart}")
     
     if cart is None:
         cart = Cart.objects.create(session_id=session_id, cart_items=[cid])
-        print(f"Created new cart: {cart}")
+
     elif cid not in cart.cart_items:
         cart.cart_items.append(cid)
         cart.save()
-        print(f"Updated cart with new item: {cart.cart_items}")
     
     return JsonResponse({
         "message": _("The product has been added to your cart"),
@@ -40,8 +37,7 @@ def cart_update(request, cid):
     })
 
 def remove_cart(request,cid):
- 
-    
+
     session_id = request.session.session_key
     if not session_id:
         return JsonResponse({})
@@ -82,8 +78,6 @@ def category(request,pk=None):
 def checkout(request):
     return render(request,'checkout.html')
 
-def checkout_complete(request):
-    return render(request,'checkout-complete.html')
 
 def contact(request):
     return render(request,'contact.html')

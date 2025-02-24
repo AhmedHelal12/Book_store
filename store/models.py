@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.sessions.models import Session
 from book_store import settings
+from checkout.models import Transaction
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
     featured = models.BooleanField(default=False)
@@ -15,7 +17,6 @@ class Category(models.Model):
 class Author(models.Model):
     name = models.CharField(max_length=255)
     bio = models.TextField()
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -38,21 +39,24 @@ class Product(models.Model):
     @property
     def pdf_url(self):
         return settings.SITE_URL+ self.pdf_file.url
+    
     def __str__(self):
         return self.name
 
+
+class Cart(models.Model):
+    cart_items = models.JSONField(default=dict)
+    session = models.ForeignKey(Session,on_delete=models.CASCADE)
+
+    
 class Order(models.Model):
-    customer = models.JSONField(default=dict)
-    total = models.FloatField()
+    transaction = models.OneToOneField(Transaction,on_delete=models.PROTECT,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    @property
-    def customer_name(self):
-        return self.customer['first_name'] +' ' + self.customer['last_name']
-    
+
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order,on_delete=models.PROTECT)
@@ -68,8 +72,4 @@ class Slider(models.Model):
 
     def __str__(self):
         return self.title
-
-class Cart(models.Model):
-    cart_items = models.JSONField(default=dict)
-    session = models.ForeignKey(Session,on_delete=models.CASCADE)
     

@@ -11,4 +11,4 @@ def website_store(request):
         cart_products = Product.objects.filter(pk__in=cart.cart_items)
         for item in cart_products:
             cart_total +=item.price
-    return {"categories":categories,'cart_products':cart_products,'total':cart_total}
+    return {"categories":categories,'cart_products':cart_products,'cart_total':cart_total}

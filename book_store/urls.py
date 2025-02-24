@@ -22,5 +22,5 @@ from . import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('store.urls')),
-    path('checkout',include('checkout.urls'))
+    path('checkout/',include('checkout.urls'))
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
